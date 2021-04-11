@@ -40,7 +40,7 @@ async function warmupAgenda(agenda, allowedGroupHeader) {
   await fetch(url, {
     method: 'GET',
     headers: {
-      'mu-auth-allowed-headers': allowedGroupHeader
+      'mu-auth-allowed-groups': allowedGroupHeader
     }
   });
 }
