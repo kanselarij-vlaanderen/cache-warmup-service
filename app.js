@@ -1,7 +1,9 @@
-import { app, errorHandler, sparqlEscapeDateTime } from 'mu';
-import { AUTO_RUN, BACKEND_URL, MASTER_GRAPH, MU_AUTH_ALLOWED_GROUPS } from './config';
-import { querySudo as query } from '@lblod/mu-auth-sudo';
+import { app, errorHandler } from 'mu';
 import fetch from 'node-fetch';
+import { AUTO_RUN, BACKEND_URL,
+         ENABLE_RECENT_AGENDAS_CACHE, ENABLE_LARGE_AGENDAS_CACHE,
+         MIN_NB_OF_AGENDAITEMS, MU_AUTH_ALLOWED_GROUPS } from './config';
+import { fetchMostRecentAgendas, fetchLargeAgendas } from './helpers';
 
 app.get('/', function(req, res) {
   res.send("Are you cold? Let's warm this place up.");
@@ -16,21 +18,35 @@ if (AUTO_RUN)
   warmup();
 
 async function warmup() {
-  const mostRecentAgendaIds = await fetchMostRecentAgendas();
-  console.log(`Found ${mostRecentAgendaIds.length} agendas that have been modified last year`);
+  if (ENABLE_RECENT_AGENDAS_CACHE) {
+    const agendaIds = await fetchMostRecentAgendas();
+    console.log(`Found ${agendaIds.length} agendas that have been modified last year`);
+    await warmupAgendas(agendaIds);
+  } else {
+    console.log(`Caching of recent agendas disabled. Set ENABLE_RECENT_AGENDAS_CACHE env var on "true" to enable.`);
+  }
 
+  if (ENABLE_LARGE_AGENDAS_CACHE) {
+    const agendaIds = await fetchLargeAgendas();
+    console.log(`Found ${agendaIds.length} agendas that have more than ${MIN_NB_OF_AGENDAITEMS} agendaitems`);
+    await warmupAgendas(agendaIds);
+  } else {
+    console.log(`Caching of large agendas disabled. Set ENABLE_LARGE_AGENDAS_CACHE env var on "true" to enable.`);
+  }
+}
+
+async function warmupAgendas(agendas) {
   for (let group of MU_AUTH_ALLOWED_GROUPS) {
     const allowedGroupHeader = JSON.stringify(group);
     console.log(`Warming up cache for allowed group ${allowedGroupHeader}`);
 
     let i = 0;
-    for (let agenda of mostRecentAgendaIds) {
+    for (let agenda of agendas) {
       i++;
       await warmupAgenda(agenda, allowedGroupHeader);
       if (i % 10 == 0)
         console.log(`Loaded ${i} agendas in cache`);
     }
-
     console.log(`Finished warming up cache for allowed group ${allowedGroupHeader}`);
   }
 }
@@ -43,26 +59,6 @@ async function warmupAgenda(agenda, allowedGroupHeader) {
       'mu-auth-allowed-groups': allowedGroupHeader
     }
   });
-}
-
-async function fetchMostRecentAgendas() {
-  const since = new Date();
-  since.setYear(since.getFullYear() - 1); // 1 year ago
-  const queryResult = await query(`
-    PREFIX besluitvorming: <http://data.vlaanderen.be/ns/besluitvorming#>
-    PREFIX dct: <http://purl.org/dc/terms/>
-    PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
-    SELECT DISTINCT ?agendaId WHERE {
-      GRAPH <${MASTER_GRAPH}> {
-        ?s a besluitvorming:Agenda ;
-           mu:uuid ?agendaId ;
-           dct:modified ?modified .
-      }
-      FILTER (?modified > ${sparqlEscapeDateTime(since)})
-    } ORDER BY DESC(?modified)
-  `);
-
-  return queryResult.results.bindings.map(b => b['agendaId'].value);
 }
 
 function getAgendaitemsRequestUrl(agendaId) {
