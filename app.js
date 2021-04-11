@@ -36,7 +36,7 @@ async function warmup() {
 }
 
 async function warmupAgenda(agenda, allowedGroupHeader) {
-  const url = BACKEND_URL + getAgendaitemsRequestUrl(agenda);
+  const url = getAgendaitemsRequestUrl(agenda);
   await fetch(url, {
     method: 'GET',
     headers: {
@@ -66,7 +66,17 @@ async function fetchMostRecentAgendas() {
 }
 
 function getAgendaitemsRequestUrl(agendaId) {
-  return `agendaitems?fields[document-containers]=&fields[mandatees]=title,priority&fields[pieces]=name,document-container,created&filter[agenda][:id:]=${agendaId}&include=mandatees,pieces,pieces.document-container&page[size]=300&sort=show-as-remark,priority`;
+  const path = 'agendaitems';
+  const params = new URLSearchParams({
+    'fields[document-containers]': '',
+    'fields[mandatees]': 'title,priority',
+    'fields[pieces]': 'name,document-container,created',
+    'filter[agenda][:id:]': agendaId,
+    'include': 'mandatees,pieces,pieces.document-container',
+    'page[size]': 300,
+    'sort': 'show-as-remark,priority'
+  });
+  return `${BACKEND_URL}${path}?${params}`;
 }
 
 app.use(errorHandler);
