@@ -47,7 +47,7 @@ async function warmupAgenda(agenda, allowedGroupHeader) {
 
 async function fetchMostRecentAgendas() {
   const since = new Date();
-  since.setYear(since.getFullYear() - 3); // 1 year ago
+  since.setYear(since.getFullYear() - 1); // 1 year ago
   const queryResult = await query(`
     PREFIX besluitvorming: <http://data.vlaanderen.be/ns/besluitvorming#>
     PREFIX dct: <http://purl.org/dc/terms/>
