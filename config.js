@@ -1,5 +1,7 @@
-const BACKEND_URL = 'http://cache/';
-const MASTER_GRAPH = 'http://mu.semte.ch/graphs/organizations/kanselarij';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://cache/';
+const MASTER_GRAPH = process.env.MASTER_GRAPH || 'http://mu.semte.ch/graphs/organizations/kanselarij';
+
+const AUTO_RUN = ["yes", "true", true, "1", 1, "on"].includes(process.env.AUTO_RUN);
 
 const MU_AUTH_ALLOWED_GROUPS = [
   [ // Admin
@@ -40,5 +42,6 @@ const MU_AUTH_ALLOWED_GROUPS = [
 export {
   BACKEND_URL,
   MASTER_GRAPH,
+  AUTO_RUN,
   MU_AUTH_ALLOWED_GROUPS
 };

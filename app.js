@@ -1,5 +1,5 @@
 import { app, errorHandler, sparqlEscapeDateTime } from 'mu';
-import { BACKEND_URL, MASTER_GRAPH, MU_AUTH_ALLOWED_GROUPS } from './config';
+import { AUTO_RUN, BACKEND_URL, MASTER_GRAPH, MU_AUTH_ALLOWED_GROUPS } from './config';
 import { querySudo as query } from '@lblod/mu-auth-sudo';
 import fetch from 'node-fetch';
 
@@ -11,6 +11,9 @@ app.post('/warmup', function(req, res) {
   warmup();
   res.status(202).send();
 });
+
+if (AUTO_RUN)
+  warmup();
 
 async function warmup() {
   const mostRecentAgendaIds = await fetchMostRecentAgendas();
@@ -25,8 +28,10 @@ async function warmup() {
       i++;
       await warmupAgenda(agenda, allowedGroupHeader);
       if (i % 10 == 0)
-        console.log(`Loaded ${i} agendas in cache already`);
+        console.log(`Loaded ${i} agendas in cache`);
     }
+
+    console.log(`Finished warming up cache for allowed group ${allowedGroupHeader}`);
   }
 }
 
