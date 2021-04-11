@@ -8,11 +8,25 @@ The setup is only a short-term solution and is rather brittle. Each change to th
 
 ## Getting started
 ### Adding the service to your stack
-_Describe how to add the service to a stack_
+Add the following snippet to your `docker-compose.yml` file
+
+```yaml
+services:
+  cache-warmup:
+    image: kanselarij/cache-warmup-service:latest
+```
 
 ## Reference
 ### Configuration
-_Describe configuration options_
+The following settings can be configured through environment variables:
+- **BACKEND_URL**: URL of the backend service to send requests to (default `http://cache/`). Must end with a trailing slash (`/`).
+- **MASTER_GRAPH**: graph to fetch agenda's from using a sudo-query (default `http://mu.semte.ch/graphs/organizations/kanselarij`)
+- **AUTO_RUN**: runs the warmup process automatically on startup if set to `"true"` (default `"false"`)
 
+### Endpoints
+#### POST /warmup
+Manually trigger the warmup process.
+
+For each configured mu-auth-allowed groups the agendaitems will be fetched for each agenda modified last year.
 
 
