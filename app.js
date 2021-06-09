@@ -66,7 +66,7 @@ function getAgendaitemsRequestUrl(agendaId) {
   const params = new URLSearchParams({
     'fields[document-containers]': '',
     'fields[mandatees]': 'title,priority',
-    'fields[pieces]': 'name,document-container,created',
+    'fields[pieces]': 'name,document-container,created,confidential',
     'filter[agenda][:id:]': agendaId,
     'include': 'mandatees,pieces,pieces.document-container',
     'page[size]': 300,
