@@ -70,7 +70,7 @@ function getAgendaitemsRequestUrl(agendaId) {
     'filter[agenda][:id:]': agendaId,
     'include': 'mandatees,pieces,pieces.document-container',
     'page[size]': 300,
-    'sort': 'show-as-remark,priority'
+    'sort': 'show-as-remark,number'
   });
   return `${BACKEND_URL}${path}?${params}`;
 }
