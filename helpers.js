@@ -1,6 +1,6 @@
-import { sparqlEscapeDateTime } from 'mu';
-import { querySudo as query } from '@lblod/mu-auth-sudo';
-import { MASTER_GRAPH, MIN_NB_OF_AGENDAITEMS } from './config';
+import { sparqlEscapeDateTime, sparqlEscapeString } from "mu";
+import { querySudo as query } from "@lblod/mu-auth-sudo";
+import { MASTER_GRAPH, MIN_NB_OF_AGENDAITEMS } from "./config";
 
 async function fetchMostRecentAgendas() {
   const since = new Date();
@@ -19,7 +19,7 @@ async function fetchMostRecentAgendas() {
     } ORDER BY DESC(?modified)
   `);
 
-  return queryResult.results.bindings.map(b => b['agendaId'].value);
+  return queryResult.results.bindings.map((b) => b["agendaId"].value);
 }
 
 async function fetchLargeAgendas() {
@@ -41,10 +41,30 @@ async function fetchLargeAgendas() {
       }
       FILTER (?count > ${MIN_NB_OF_AGENDAITEMS})
     } ORDER BY DESC(?count)`);
-  return queryResult.results.bindings.map(b => b['agendaId'].value);
+  return queryResult.results.bindings.map((b) => b["agendaId"].value);
+}
+
+async function fetchAgendaitemsFromAgenda(agendaId) {
+  const queryResult = await query(`
+    PREFIX besluitvorming: <http://data.vlaanderen.be/ns/besluitvorming#>
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
+    SELECT DISTINCT ?agendaitemId {
+      GRAPH <${MASTER_GRAPH}> {
+        ?agenda a besluitvorming:Agenda ;
+          mu:uuid ${sparqlEscapeString(agendaId)};
+          dct:hasPart ?agendaitem .
+        ?agendaitem mu:uuid ?agendaitemId .
+      }
+    }
+    `);
+  return queryResult.results.bindings.map((binding) => {
+    return binding.agendaitemId.value;
+  });
 }
 
 export {
   fetchMostRecentAgendas,
-  fetchLargeAgendas
-}
+  fetchLargeAgendas,
+  fetchAgendaitemsFromAgenda,
+};
