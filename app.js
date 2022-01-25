@@ -80,17 +80,21 @@ async function warmupAgenda(agenda, allowedGroupHeader) {
   try {
     await Promise.all(
       urls.map(async (url) => {
-        fetch(url, {
+        return fetch(url, {
           method: "GET",
           headers: {
             "mu-auth-allowed-groups": allowedGroupHeader,
           },
+        }).catch((error) => {
+          throw error;
         });
       })
-    );
+    ).catch((error) => {
+      throw error;
+    });
   } catch (error) {
     console.warn(`error warming up agenda ${agenda}, not retrying`);
-    console.error(error);
+    console.error(error.message);
   }
 }
 
