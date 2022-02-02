@@ -41,7 +41,7 @@ async function warmup() {
     console.log(
       `Found ${largeAgendaIds.length} agendas that have more than ${MIN_NB_OF_AGENDAITEMS} agendaitems`
     );
-    if (cachedAgendaIds.length > 1) {
+    if (cachedAgendaIds.length) {
       let filteredAgendaIds = largeAgendaIds.filter(
         (agendaId) => !cachedAgendaIds.includes(agendaId)
       );
