@@ -78,20 +78,15 @@ async function warmupAgendas(agendas) {
 async function warmupAgenda(agenda, allowedGroupHeader) {
   const urls = await getAgendaitemsRequestUrls(agenda);
   try {
-    await Promise.all(
-      urls.map(async (url) => {
-        return fetch(url, {
-          method: "GET",
-          headers: {
-            "mu-auth-allowed-groups": allowedGroupHeader,
-          },
-        }).catch((error) => {
-          throw error;
-        });
-      })
-    ).catch((error) => {
-      throw error;
-    });
+    const promises = urls.map((url) => {
+      return fetch(url, {
+        method: "GET",
+        headers: {
+          "mu-auth-allowed-groups": allowedGroupHeader,
+        }
+      });
+    })
+    await Promise.all(promises);
   } catch (error) {
     console.warn(`error warming up agenda ${agenda}, not retrying`);
     console.error(error.message);
