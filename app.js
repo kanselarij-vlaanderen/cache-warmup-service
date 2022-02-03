@@ -22,12 +22,14 @@ app.post("/warmup", function (req, res) {
 if (AUTO_RUN) warmup();
 
 async function warmup() {
+  let cachedAgendaIds = [];
   if (ENABLE_RECENT_AGENDAS_CACHE) {
-    const agendaIds = await helpers.fetchMostRecentAgendas();
+    const recentAgendaIds = await helpers.fetchMostRecentAgendas();
     console.log(
-      `Found ${agendaIds.length} agendas that have been modified last year`
+      `Found ${recentAgendaIds.length} agendas that have been modified last year`
     );
-    await warmupAgendas(agendaIds);
+    await warmupAgendas(recentAgendaIds);
+    cachedAgendaIds = recentAgendaIds;
   } else {
     console.log(
       `Caching of recent agendas disabled. Set ENABLE_RECENT_AGENDAS_CACHE env var on "true" to enable.`
@@ -35,11 +37,20 @@ async function warmup() {
   }
 
   if (ENABLE_LARGE_AGENDAS_CACHE) {
-    const agendaIds = await helpers.fetchLargeAgendas();
+    let largeAgendaIds = await helpers.fetchLargeAgendas();
     console.log(
-      `Found ${agendaIds.length} agendas that have more than ${MIN_NB_OF_AGENDAITEMS} agendaitems`
+      `Found ${largeAgendaIds.length} agendas that have more than ${MIN_NB_OF_AGENDAITEMS} agendaitems`
     );
-    await warmupAgendas(agendaIds);
+    if (cachedAgendaIds.length) {
+      let filteredAgendaIds = largeAgendaIds.filter(
+        (agendaId) => !cachedAgendaIds.includes(agendaId)
+      );
+      console.log(
+        `Of those ${largeAgendaIds.length} agendas, ${filteredAgendaIds.length} agendas have not yet been cached.`
+      );
+      largeAgendaIds = filteredAgendaIds;
+    }
+    await warmupAgendas(largeAgendaIds);
   } else {
     console.log(
       `Caching of large agendas disabled. Set ENABLE_LARGE_AGENDAS_CACHE env var on "true" to enable.`
@@ -66,13 +77,19 @@ async function warmupAgendas(agendas) {
 
 async function warmupAgenda(agenda, allowedGroupHeader) {
   const urls = await getAgendaitemsRequestUrls(agenda);
-  for (let url of urls) {
-    await fetch(url, {
-      method: "GET",
-      headers: {
-        "mu-auth-allowed-groups": allowedGroupHeader,
-      },
-    });
+  try {
+    const promises = urls.map((url) => {
+      return fetch(url, {
+        method: "GET",
+        headers: {
+          "mu-auth-allowed-groups": allowedGroupHeader,
+        }
+      });
+    })
+    await Promise.all(promises);
+  } catch (error) {
+    console.warn(`error warming up agenda ${agenda}, not retrying`);
+    console.error(error.message);
   }
 }
 
