@@ -8,14 +8,14 @@ const MIN_NB_OF_AGENDAITEMS = Number.parseInt(process.env.MIN_NB_OF_AGENDAITEMS 
 const MU_AUTH_ALLOWED_GROUPS = [
   [ // Admin
     { "variables": [], "name": "public" },
-    { "variables": [], "name": "o-admin-on-public" },
+    { "variables": [], "name": "writes-on-public" },
     { "variables": [], "name": "o-admin-roles" },
     { "variables": [], "name": "o-kanselarij-all" },
     { "variables": [], "name": "clean" }
   ],
   [ // Kanselarij
     { "variables": [], "name": "public" },
-    { "variables": [], "name": "o-kanselarij-on-public" },
+    { "variables": [], "name": "writes-on-public" },
     { "variables": [], "name": "o-kanselarij-all" },
     { "variables": [], "name": "clean" }
   ],
