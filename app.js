@@ -85,7 +85,7 @@ async function warmupAgenda(agenda, allowedGroupHeader) {
           "mu-auth-allowed-groups": allowedGroupHeader,
         }
       });
-    })
+    });
     await Promise.all(promises);
   } catch (error) {
     console.warn(`error warming up agenda ${agenda}, not retrying`);
