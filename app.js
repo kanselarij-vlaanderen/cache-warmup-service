@@ -77,16 +77,23 @@ async function warmupAgendas(agendas) {
 
 async function warmupAgenda(agenda, allowedGroupHeader) {
   const urls = await getAgendaitemsRequestUrls(agenda);
+  const chunkSize = 10;
+  const chunkedUrls = helpers.chunk(urls, chunkSize);
+  console.log(
+    `Warming up agenda ${agenda} requires ${urls.length} requests which will be made in parallel in batches of ${chunkSize}`
+  )
   try {
-    const promises = urls.map((url) => {
-      return fetch(url, {
-        method: "GET",
-        headers: {
-          "mu-auth-allowed-groups": allowedGroupHeader,
-        }
+    for (const chunk of chunkedUrls) {
+      const promises = chunk.map((url) => {
+        return fetch(url, {
+          method: "GET",
+          headers: {
+            "mu-auth-allowed-groups": allowedGroupHeader,
+          }
+        });
       });
-    });
-    await Promise.all(promises);
+      await Promise.all(promises);
+    }
   } catch (error) {
     console.warn(`error warming up agenda ${agenda}, not retrying`);
     console.error(error.message);
