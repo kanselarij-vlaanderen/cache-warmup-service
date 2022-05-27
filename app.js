@@ -60,19 +60,17 @@ async function warmup() {
 }
 
 async function warmupAgendas(agendas) {
-  for (let group of MU_AUTH_ALLOWED_GROUPS) {
-    const allowedGroupHeader = JSON.stringify(group);
-    console.log(`Warming up cache for allowed group ${allowedGroupHeader}`);
+  let i = 0;
+  for (let agenda of agendas) {
+    console.log(`Warming up cache for all allowed groups for agenda ${agenda}`);
 
-    let i = 0;
-    for (let agenda of agendas) {
-      i++;
+    for (let group of MU_AUTH_ALLOWED_GROUPS) {
+      const allowedGroupHeader = JSON.stringify(group);
       await warmupAgenda(agenda, allowedGroupHeader);
-      if (i % 10 == 0) console.log(`Loaded ${i} agendas in cache`);
     }
-    console.log(
-      `Finished warming up cache for allowed group ${allowedGroupHeader}`
-    );
+
+    i++;
+    if (i % 10 == 0) console.log(`Loaded ${i} agendas in cache`);
   }
 }
 
