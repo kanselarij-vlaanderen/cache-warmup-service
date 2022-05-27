@@ -7,6 +7,7 @@ import {
   ENABLE_LARGE_AGENDAS_CACHE,
   MIN_NB_OF_AGENDAITEMS,
   MU_AUTH_ALLOWED_GROUPS,
+  REQUEST_CHUNK_SIZE,
 } from "./config";
 import * as helpers from "./helpers";
 
@@ -77,10 +78,9 @@ async function warmupAgendas(agendas) {
 
 async function warmupAgenda(agenda, allowedGroupHeader) {
   const urls = await getAgendaitemsRequestUrls(agenda);
-  const chunkSize = 10;
-  const chunkedUrls = helpers.chunk(urls, chunkSize);
+  const chunkedUrls = helpers.chunk(urls, REQUEST_CHUNK_SIZE);
   console.log(
-    `Warming up agenda ${agenda} requires ${urls.length} requests which will be made in parallel in batches of ${chunkSize}`
+    `Warming up agenda ${agenda} requires ${urls.length} requests which will be made in parallel in batches of ${REQUEST_CHUNK_SIZE}`
   )
   try {
     for (const chunk of chunkedUrls) {
