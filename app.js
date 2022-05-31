@@ -7,6 +7,7 @@ import {
   ENABLE_LARGE_AGENDAS_CACHE,
   MIN_NB_OF_AGENDAITEMS,
   MU_AUTH_ALLOWED_GROUPS,
+  REQUEST_CHUNK_SIZE,
 } from "./config";
 import * as helpers from "./helpers";
 
@@ -59,34 +60,38 @@ async function warmup() {
 }
 
 async function warmupAgendas(agendas) {
-  for (let group of MU_AUTH_ALLOWED_GROUPS) {
-    const allowedGroupHeader = JSON.stringify(group);
-    console.log(`Warming up cache for allowed group ${allowedGroupHeader}`);
+  let i = 0;
+  for (let agenda of agendas) {
+    console.log(`Warming up cache for all allowed groups for agenda ${agenda}`);
 
-    let i = 0;
-    for (let agenda of agendas) {
-      i++;
+    for (let group of MU_AUTH_ALLOWED_GROUPS) {
+      const allowedGroupHeader = JSON.stringify(group);
       await warmupAgenda(agenda, allowedGroupHeader);
-      if (i % 10 == 0) console.log(`Loaded ${i} agendas in cache`);
     }
-    console.log(
-      `Finished warming up cache for allowed group ${allowedGroupHeader}`
-    );
+
+    i++;
+    if (i % 10 == 0) console.log(`Loaded ${i} agendas in cache`);
   }
 }
 
 async function warmupAgenda(agenda, allowedGroupHeader) {
   const urls = await getAgendaitemsRequestUrls(agenda);
+  const chunkedUrls = helpers.chunk(urls, REQUEST_CHUNK_SIZE);
+  console.log(
+    `Warming up agenda ${agenda} requires ${urls.length} requests which will be made in parallel in batches of ${REQUEST_CHUNK_SIZE}`
+  )
   try {
-    const promises = urls.map((url) => {
-      return fetch(url, {
-        method: "GET",
-        headers: {
-          "mu-auth-allowed-groups": allowedGroupHeader,
-        }
+    for (const chunk of chunkedUrls) {
+      const promises = chunk.map((url) => {
+        return fetch(url, {
+          method: "GET",
+          headers: {
+            "mu-auth-allowed-groups": allowedGroupHeader,
+          }
+        });
       });
-    });
-    await Promise.all(promises);
+      await Promise.all(promises);
+    }
   } catch (error) {
     console.warn(`error warming up agenda ${agenda}, not retrying`);
     console.error(error.message);

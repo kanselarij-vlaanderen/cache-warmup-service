@@ -1,6 +1,7 @@
 const BACKEND_URL = process.env.BACKEND_URL || 'http://cache/';
 const MASTER_GRAPH = process.env.MASTER_GRAPH || 'http://mu.semte.ch/graphs/organizations/kanselarij';
 const AUTO_RUN = ["yes", "true", true, "1", 1, "on"].includes(process.env.AUTO_RUN);
+const REQUEST_CHUNK_SIZE = parseInt(process.env.REQUEST_CHUNK_SIZE) || 10;
 const ENABLE_RECENT_AGENDAS_CACHE = ["yes", "true", true, "1", 1, "on"].includes(process.env.ENABLE_RECENT_AGENDAS_CACHE);
 const ENABLE_LARGE_AGENDAS_CACHE = ["yes", "true", true, "1", 1, "on"].includes(process.env.ENABLE_LARGE_AGENDAS_CACHE);
 const MIN_NB_OF_AGENDAITEMS = Number.parseInt(process.env.MIN_NB_OF_AGENDAITEMS || "70");
@@ -48,5 +49,6 @@ export {
   ENABLE_RECENT_AGENDAS_CACHE,
   ENABLE_LARGE_AGENDAS_CACHE,
   MIN_NB_OF_AGENDAITEMS,
-  MU_AUTH_ALLOWED_GROUPS
+  MU_AUTH_ALLOWED_GROUPS,
+  REQUEST_CHUNK_SIZE,
 };
