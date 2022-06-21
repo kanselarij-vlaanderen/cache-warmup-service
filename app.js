@@ -79,7 +79,7 @@ async function warmupAgenda(agenda, allowedGroupHeader) {
   const chunkedUrls = helpers.chunk(urls, REQUEST_CHUNK_SIZE);
   console.log(
     `Warming up agenda ${agenda} requires ${urls.length} requests which will be made in parallel in batches of ${REQUEST_CHUNK_SIZE}`
-  )
+  );
   try {
     for (const chunk of chunkedUrls) {
       const promises = chunk.map((url) => {
