@@ -57,6 +57,8 @@ async function warmup() {
       `Caching of large agendas disabled. Set ENABLE_LARGE_AGENDAS_CACHE env var on "true" to enable.`
     );
   }
+
+  console.log(`Cache warmup finished`);
 }
 
 async function warmupAgendas(agendas) {
