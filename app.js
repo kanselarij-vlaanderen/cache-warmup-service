@@ -70,7 +70,7 @@ async function warmupAgendas(agendas) {
     }
 
     i++;
-    if (i % 10 == 0) console.log(`Loaded ${i} agendas in cache`);
+    if (i % 10 == 0) console.log(`Loaded ${i} agendas in cache for all allowed groups`);
   }
 }
 
@@ -79,8 +79,9 @@ async function warmupAgenda(agenda, allowedGroupHeader) {
     const urls = await getAgendaitemsRequestUrls(agenda);
     const chunkedUrls = helpers.chunk(urls, REQUEST_CHUNK_SIZE);
     console.log(
-      `Warming up agenda ${agenda} requires ${urls.length} requests which will be made in parallel in batches of ${REQUEST_CHUNK_SIZE}`
+      `Warming up agenda ${agenda} for allowed group ${allowedGroupHeader} (${urls.length} requests, executed in parallel per ${REQUEST_CHUNK_SIZE})`
     );
+    let i = 1;
     for (const chunk of chunkedUrls) {
       const promises = chunk.map((url) => {
         return fetch(url, {
@@ -91,9 +92,11 @@ async function warmupAgenda(agenda, allowedGroupHeader) {
         });
       });
       await Promise.all(promises);
+      console.log(`-- Batch ${i}/${chunkedUrls.length} done`);
+      i++;
     }
   } catch (error) {
-    console.warn(`error warming up agenda ${agenda}, not retrying`);
+    console.warn(`Error warming up agenda ${agenda} for allowed group ${allowedGroupHeader}. Not going to retry.`);
     console.error(error.message);
   }
 }
