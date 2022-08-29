@@ -111,7 +111,7 @@ async function getAgendaitemsRequestUrls(agendaId) {
   const params = new URLSearchParams({
     "filter[agenda][:id:]": agendaId,
     "page[size]": 300,
-    sort: "show-as-remark,number",
+    sort: "type,number",
   });
   urls.push(`${BACKEND_URL}${path}?${params}`);
 
