@@ -129,7 +129,7 @@ async function getAgendaitemsRequestUrls(agendaId) {
     const path = "pieces";
     const params = new URLSearchParams({
       "filter[agendaitems][:id:]": agendaitemId,
-      include: "document-container,access-level",
+      include: "access-level,document-container",
       "page[size]": 500,
     });
     urls.push(`${BACKEND_URL}${path}?${params}`);
