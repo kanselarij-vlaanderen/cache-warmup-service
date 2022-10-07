@@ -8,36 +8,41 @@ const MIN_NB_OF_AGENDAITEMS = Number.parseInt(process.env.MIN_NB_OF_AGENDAITEMS 
 
 const MU_AUTH_ALLOWED_GROUPS = [
   [ // Admin
+    { "variables": [], "name": "admin" },
+    { "variables": [], "name": "secretarie" },
+    { "variables": [], "name": "ovrb" },
+    { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "public" },
-    { "variables": [], "name": "writes-on-public" },
-    { "variables": [], "name": "o-admin-roles" },
-    { "variables": [], "name": "o-kanselarij-all" },
     { "variables": [], "name": "clean" }
   ],
-  [ // Kanselarij
+  [ // Secretarie / KB
+    { "variables": [], "name": "secretarie" },
+    { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "public" },
-    { "variables": [], "name": "writes-on-public" },
-    { "variables": [], "name": "o-kanselarij-all" },
     { "variables": [], "name": "clean" }
   ],
   [ // OVRB
-    { "variables": [], "name": "public" },
     { "variables": [], "name": "ovrb" },
+    { "variables": [], "name": "authenticated" },
+    { "variables": [], "name": "public" },
     { "variables": [], "name": "clean" }
   ],
   [ // Minister
-    { "variables": [], "name": "public" },
     { "variables": [], "name": "o-minister-read" },
+    { "variables": [], "name": "authenticated" },
+    { "variables": [], "name": "public" },
     { "variables": [], "name": "clean" }
   ],
   [ // Regering / kabinet
-    { "variables": [], "name": "public" },
     { "variables": [], "name": "o-intern-regering-read" },
+    { "variables": [], "name": "authenticated" },
+    { "variables": [], "name": "public" },
     { "variables": [], "name": "clean" }
   ],
   [ // Overheid
-    { "variables": [], "name": "public" },
     { "variables": [], "name": "o-intern-overheid-read" },
+    { "variables": [], "name": "authenticated" },
+    { "variables": [], "name": "public" },
     { "variables": [], "name": "clean" }
   ]
 ];
