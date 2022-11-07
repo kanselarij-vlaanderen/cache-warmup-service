@@ -152,7 +152,6 @@ async function getAgendaitemsRequestUrls(agendaId) {
 
 async function warmupConcepts() {
   const urls = [
-    getAgendaitemTypeConceptRequest(),
     ...[
       CONCEPT_SCHEMES.MEETING_TYPE,
       CONCEPT_SCHEMES.ACCESS_LEVELS,
@@ -183,14 +182,6 @@ async function warmupConcepts() {
   }
 }
 
-function getAgendaitemTypeConceptRequest() {
-  const params = new URLSearchParams({
-    "filter[concept-schemes][:uri:]": CONCEPT_SCHEMES.AGENDA_ITEM_TYPES,
-    "page[size]": 100,
-    sort: "-label",
-  });
-  return `${BACKEND_URL}concepts?${params}`;
-}
 
 function getConceptRequestUrl(conceptSchemeUri) {
   const params = new URLSearchParams({
