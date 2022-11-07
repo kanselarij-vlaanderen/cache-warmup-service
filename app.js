@@ -152,17 +152,19 @@ async function getAgendaitemsRequestUrls(agendaId) {
 
 async function warmupConcepts() {
   const urls = [
-    ...[
+    await getConceptsHasNoNarrowerBatchedRequestsUrls(CONCEPT_SCHEMES.MEETING_TYPE),
+    await Promise.all([
+      CONCEPT_SCHEMES.AGENDA_ITEM_TYPES,
       CONCEPT_SCHEMES.MEETING_TYPE,
       CONCEPT_SCHEMES.ACCESS_LEVELS,
       CONCEPT_SCHEMES.DOCUMENT_TYPES,
       CONCEPT_SCHEMES.DECISION_RESULT_CODES,
       CONCEPT_SCHEMES.RELEASE_STATUSES,
       CONCEPT_SCHEMES.USER_ROLES,
-    ].map(getConceptRequestUrl),
-    ...(await getConceptsBatchedRequestsUrls(CONCEPT_SCHEMES.GOVERNMENT_FIELDS)),
-    ...STATIC_TYPES.map(getStaticTypeUrl),
-  ];
+      CONCEPT_SCHEMES.GOVERNMENT_FIELDS,
+    ].map(getConceptsBatchedRequestsUrls)),
+    STATIC_TYPES.map(getStaticTypeUrl),
+  ].flat(Infinity);
 
   for (let group of MU_AUTH_ALLOWED_GROUPS) {
     const allowedGroupHeader = JSON.stringify(group);
@@ -182,16 +184,37 @@ async function warmupConcepts() {
   }
 }
 
+async function getConceptsHasNoNarrowerBatchedRequestsUrls(conceptSchemeUri) {
+  const urls = [];
 
-function getConceptRequestUrl(conceptSchemeUri) {
-  const params = new URLSearchParams({
+  // count
+  const countParams = new URLSearchParams({
     "filter[:has-no:narrower]": true,
     "filter[concept-schemes][:uri:]": conceptSchemeUri,
     include: "broader,narrower",
-    "page[size]": 100,
+    "page[size]": 1,
     sort: "position",
   });
-  return `${BACKEND_URL}concepts?${params}`;
+  urls.push(`${BACKEND_URL}concepts?${countParams}`);
+
+  const count = await helpers.countConceptsForConceptScheme(conceptSchemeUri);
+
+  // the batches
+  const batchSize = 100;
+  const nbOfBatches = Math.ceil(count / batchSize);
+  for (let i = 0; i < nbOfBatches; i++) {
+    const params = new URLSearchParams({
+      "filter[:has-no:narrower]": true,
+      "filter[concept-schemes][:uri:]": conceptSchemeUri,
+      include: "broader,narrower",
+      "page[number]": i,
+      "page[size]": batchSize,
+      sort: "position",
+    });
+    urls.push(`${BACKEND_URL}concepts?${params}`);
+  }
+
+  return urls;
 }
 
 async function getConceptsBatchedRequestsUrls(conceptSchemeUri) {
@@ -201,6 +224,7 @@ async function getConceptsBatchedRequestsUrls(conceptSchemeUri) {
   const countParams = new URLSearchParams({
     "filter[concept-schemes][:uri:]": conceptSchemeUri,
     "page[size]": 1,
+    sort: "position",
   });
   urls.push(`${BACKEND_URL}concepts?${countParams}`);
 
@@ -212,8 +236,9 @@ async function getConceptsBatchedRequestsUrls(conceptSchemeUri) {
   for (let i = 0; i <= nbOfBatches; i++) {
     const params = new URLSearchParams({
       "filter[concept-schemes][:uri:]": conceptSchemeUri,
-      "page[size]": batchSize,
       "page[number]": i,
+      "page[size]": batchSize,
+      sort: "position",
     });
     urls.push(`${BACKEND_URL}concepts?${params}`);
   }
