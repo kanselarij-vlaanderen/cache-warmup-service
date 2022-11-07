@@ -30,7 +30,7 @@ async function warmup() {
     await warmupConcepts();
   } else {
     console.log(
-      `Caching of concepts disabled. set ENABLE_CONCEPTS_CACHE env var on "true" to enable.`
+      `Caching of concepts disabled. Set ENABLE_CONCEPTS_CACHE env var on "true" to enable.`
     );
   }
 
@@ -167,8 +167,10 @@ async function warmupConcepts() {
 
   for (let group of MU_AUTH_ALLOWED_GROUPS) {
     const allowedGroupHeader = JSON.stringify(group);
+    console.log(
+      `Warming up all concepts for allowed group ${allowedGroupHeader} (${urls.length} requests, executed in parallel)`
+    );
     const promises = urls.map((url) => {
-      console.debug(url, allowedGroupHeader);
       return fetch(url, {
         method: "GET",
         headers: {
