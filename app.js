@@ -152,7 +152,10 @@ async function getAgendaitemsRequestUrls(agendaId) {
 
 async function warmupConcepts() {
   const urls = [
-    await getConceptsHasNoNarrowerBatchedRequestsUrls(CONCEPT_SCHEMES.MEETING_TYPE),
+    await Promise.all([
+      CONCEPT_SCHEMES.MEETING_TYPE,
+      CONCEPT_SCHEMES.DOCUMENT_TYPES,
+    ].map(getConceptsHasNoNarrowerBatchedRequestsUrls)),
     await Promise.all([
       CONCEPT_SCHEMES.AGENDA_ITEM_TYPES,
       CONCEPT_SCHEMES.MEETING_TYPE,
@@ -191,7 +194,7 @@ async function getConceptsHasNoNarrowerBatchedRequestsUrls(conceptSchemeUri) {
   const countParams = new URLSearchParams({
     "filter[:has-no:narrower]": true,
     "filter[concept-schemes][:uri:]": conceptSchemeUri,
-    include: "broader,narrower",
+    include: "broader",
     "page[size]": 1,
     sort: "position",
   });
@@ -206,7 +209,7 @@ async function getConceptsHasNoNarrowerBatchedRequestsUrls(conceptSchemeUri) {
     const params = new URLSearchParams({
       "filter[:has-no:narrower]": true,
       "filter[concept-schemes][:uri:]": conceptSchemeUri,
-      include: "broader,narrower",
+      include: "broader",
       "page[number]": i,
       "page[size]": batchSize,
       sort: "position",
