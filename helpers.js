@@ -1,6 +1,6 @@
-import { sparqlEscapeDateTime, sparqlEscapeString } from "mu";
+import { sparqlEscapeDateTime, sparqlEscapeString, sparqlEscapeUri } from "mu";
 import { querySudo as query } from "@lblod/mu-auth-sudo";
-import { MASTER_GRAPH, MIN_NB_OF_AGENDAITEMS } from "./config";
+import { MASTER_GRAPH, PUBLIC_GRAPH, MIN_NB_OF_AGENDAITEMS } from "./config";
 
 async function fetchMostRecentAgendas() {
   const since = new Date();
@@ -63,6 +63,21 @@ async function fetchAgendaitemsFromAgenda(agendaId) {
   });
 }
 
+async function countConceptsForConceptScheme(conceptSchemeUri) {
+  const queryResult = await query(`
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+  SELECT (COUNT(DISTINCT ?concept) AS ?count)
+  WHERE {
+    GRAPH <${PUBLIC_GRAPH}> {
+      ?concept skos:inScheme ${sparqlEscapeUri(conceptSchemeUri)} .
+    }
+  }`);
+  if (queryResult.results.bindings.length) {
+    return queryResult.results.bindings[0].count.value;
+  }
+}
+
 function chunk(array, size) {
   let chunked = [];
   for (let i = 0; i < array.length; i += size)
@@ -74,5 +89,6 @@ export {
   fetchMostRecentAgendas,
   fetchLargeAgendas,
   fetchAgendaitemsFromAgenda,
+  countConceptsForConceptScheme,
   chunk,
 };

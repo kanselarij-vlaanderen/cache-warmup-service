@@ -5,9 +5,12 @@ import {
   BACKEND_URL,
   ENABLE_RECENT_AGENDAS_CACHE,
   ENABLE_LARGE_AGENDAS_CACHE,
+  ENABLE_CONCEPTS_CACHE,
   MIN_NB_OF_AGENDAITEMS,
   MU_AUTH_ALLOWED_GROUPS,
   REQUEST_CHUNK_SIZE,
+  CONCEPT_SCHEMES,
+  STATIC_TYPES,
 } from "./config";
 import * as helpers from "./helpers";
 
@@ -23,6 +26,14 @@ app.post("/warmup", function (req, res) {
 if (AUTO_RUN) warmup();
 
 async function warmup() {
+  if (ENABLE_CONCEPTS_CACHE) {
+    await warmupConcepts();
+  } else {
+    console.log(
+      `Caching of concepts disabled. Set ENABLE_CONCEPTS_CACHE env var on "true" to enable.`
+    );
+  }
+
   let cachedAgendaIds = [];
   if (ENABLE_RECENT_AGENDAS_CACHE) {
     const recentAgendaIds = await helpers.fetchMostRecentAgendas();
@@ -137,6 +148,113 @@ async function getAgendaitemsRequestUrls(agendaId) {
   }
 
   return urls;
+}
+
+async function warmupConcepts() {
+  const urls = [
+    await Promise.all([
+      CONCEPT_SCHEMES.MEETING_TYPE,
+      CONCEPT_SCHEMES.DOCUMENT_TYPES,
+    ].map(getConceptsHasNoNarrowerBatchedRequestsUrls)),
+    await Promise.all([
+      CONCEPT_SCHEMES.AGENDA_ITEM_TYPES,
+      CONCEPT_SCHEMES.MEETING_TYPE,
+      CONCEPT_SCHEMES.ACCESS_LEVELS,
+      CONCEPT_SCHEMES.DOCUMENT_TYPES,
+      CONCEPT_SCHEMES.DECISION_RESULT_CODES,
+      CONCEPT_SCHEMES.RELEASE_STATUSES,
+      CONCEPT_SCHEMES.USER_ROLES,
+      CONCEPT_SCHEMES.GOVERNMENT_FIELDS,
+    ].map(getConceptsBatchedRequestsUrls)),
+    STATIC_TYPES.map(getStaticTypeUrl),
+  ].flat(Infinity);
+
+  for (let group of MU_AUTH_ALLOWED_GROUPS) {
+    const allowedGroupHeader = JSON.stringify(group);
+    console.log(
+      `Warming up all concepts for allowed group ${allowedGroupHeader} (${urls.length} requests, executed in parallel)`
+    );
+    const promises = urls.map((url) => {
+      return fetch(url, {
+        method: "GET",
+        headers: {
+          "mu-auth-allowed-groups": allowedGroupHeader,
+        },
+      })
+    });
+
+    await Promise.all(promises);
+  }
+}
+
+async function getConceptsHasNoNarrowerBatchedRequestsUrls(conceptSchemeUri) {
+  const urls = [];
+
+  // count
+  const countParams = new URLSearchParams({
+    "filter[:has-no:narrower]": true,
+    "filter[concept-schemes][:uri:]": conceptSchemeUri,
+    include: "broader",
+    "page[size]": 1,
+    sort: "position",
+  });
+  urls.push(`${BACKEND_URL}concepts?${countParams}`);
+
+  const count = await helpers.countConceptsForConceptScheme(conceptSchemeUri);
+
+  // the batches
+  const batchSize = 100;
+  const nbOfBatches = Math.ceil(count / batchSize);
+  for (let i = 0; i < nbOfBatches; i++) {
+    const params = new URLSearchParams({
+      "filter[:has-no:narrower]": true,
+      "filter[concept-schemes][:uri:]": conceptSchemeUri,
+      include: "broader",
+      "page[number]": i,
+      "page[size]": batchSize,
+      sort: "position",
+    });
+    urls.push(`${BACKEND_URL}concepts?${params}`);
+  }
+
+  return urls;
+}
+
+async function getConceptsBatchedRequestsUrls(conceptSchemeUri) {
+  const urls = [];
+
+  // count
+  const countParams = new URLSearchParams({
+    "filter[concept-schemes][:uri:]": conceptSchemeUri,
+    "page[size]": 1,
+    sort: "position",
+  });
+  urls.push(`${BACKEND_URL}concepts?${countParams}`);
+
+  const count = await helpers.countConceptsForConceptScheme(conceptSchemeUri);
+
+  // the batches
+  const batchSize = 100;
+  const nbOfBatches = Math.ceil(count / batchSize);
+  for (let i = 0; i <= nbOfBatches; i++) {
+    const params = new URLSearchParams({
+      "filter[concept-schemes][:uri:]": conceptSchemeUri,
+      "page[number]": i,
+      "page[size]": batchSize,
+      sort: "position",
+    });
+    urls.push(`${BACKEND_URL}concepts?${params}`);
+  }
+
+  return urls;
+}
+
+function getStaticTypeUrl(typeName) {
+  const params = new URLSearchParams({
+    "page[size]": 100,
+    sort: "position",
+  });
+  return `${BACKEND_URL}${typeName}?${params}`;
 }
 
 app.use(errorHandler);
