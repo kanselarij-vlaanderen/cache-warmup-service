@@ -164,8 +164,10 @@ async function warmupConcepts() {
       CONCEPT_SCHEMES.DECISION_RESULT_CODES,
       CONCEPT_SCHEMES.RELEASE_STATUSES,
       CONCEPT_SCHEMES.USER_ROLES,
-      CONCEPT_SCHEMES.GOVERNMENT_FIELDS,
     ].map(getConceptsBatchedRequestsUrls)),
+    await Promise.all([
+      CONCEPT_SCHEMES.GOVERNMENT_FIELDS,
+    ].map(getDateRangedConceptsBatchedRequestsUrls)),
     STATIC_TYPES.map(getStaticTypeUrl),
   ].flat(Infinity);
 
@@ -242,6 +244,37 @@ async function getConceptsBatchedRequestsUrls(conceptSchemeUri) {
       "page[number]": i,
       "page[size]": batchSize,
       sort: "position",
+    });
+    urls.push(`${BACKEND_URL}concepts?${params}`);
+  }
+
+  return urls;
+}
+
+async function getDateRangedConceptsBatchedRequestsUrls(conceptSchemeUri) {
+  // when many of a certain concept are dated with "start-date" and "end-date"
+  // sorting on "priority" may yield to inconsistent batches that contain duplicates.
+  const urls = [];
+
+  // count
+  const countParams = new URLSearchParams({
+    "filter[concept-schemes][:uri:]": conceptSchemeUri,
+    "page[size]": 1,
+    sort: "start-date,label",
+  });
+  urls.push(`${BACKEND_URL}concepts?${countParams}`);
+
+  const count = await helpers.countConceptsForConceptScheme(conceptSchemeUri);
+
+  // the batches
+  const batchSize = 100;
+  const nbOfBatches = Math.ceil(count / batchSize);
+  for (let i = 0; i <= nbOfBatches; i++) {
+    const params = new URLSearchParams({
+      "filter[concept-schemes][:uri:]": conceptSchemeUri,
+      "page[number]": i,
+      "page[size]": batchSize,
+      sort: "start-date,label",
     });
     urls.push(`${BACKEND_URL}concepts?${params}`);
   }
