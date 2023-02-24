@@ -6,7 +6,7 @@ async function fetchMostRecentAgendas() {
   const since = new Date();
   since.setYear(since.getFullYear() - 1); // 1 year ago
   const queryResult = await query(`
-    PREFIX besluitvorming: <http://data.vlaanderen.be/ns/besluitvorming#>
+    PREFIX besluitvorming: <https://data.vlaanderen.be/ns/besluitvorming#>
     PREFIX dct: <http://purl.org/dc/terms/>
     PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
     SELECT DISTINCT ?agendaId WHERE {
@@ -24,7 +24,7 @@ async function fetchMostRecentAgendas() {
 
 async function fetchLargeAgendas() {
   const queryResult = await query(`
-    PREFIX besluitvorming: <http://data.vlaanderen.be/ns/besluitvorming#>
+    PREFIX besluitvorming: <https://data.vlaanderen.be/ns/besluitvorming#>
     PREFIX dct: <http://purl.org/dc/terms/>
     PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
     SELECT ?agendaId ?count WHERE
@@ -46,7 +46,7 @@ async function fetchLargeAgendas() {
 
 async function fetchAgendaitemsFromAgenda(agendaId) {
   const queryResult = await query(`
-    PREFIX besluitvorming: <http://data.vlaanderen.be/ns/besluitvorming#>
+    PREFIX besluitvorming: <https://data.vlaanderen.be/ns/besluitvorming#>
     PREFIX dct: <http://purl.org/dc/terms/>
     PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
     SELECT DISTINCT ?agendaitemId {
