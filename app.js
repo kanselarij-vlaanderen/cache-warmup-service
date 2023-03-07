@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import {
   AUTO_RUN,
   BACKEND_URL,
+  CONCEPT_BACKEND_URL,
   ENABLE_RECENT_AGENDAS_CACHE,
   ENABLE_LARGE_AGENDAS_CACHE,
   ENABLE_CONCEPTS_CACHE,
@@ -200,7 +201,7 @@ async function getConceptsHasNoNarrowerBatchedRequestsUrls(conceptSchemeUri) {
     "page[size]": 1,
     sort: "position",
   });
-  urls.push(`${BACKEND_URL}concepts?${countParams}`);
+  urls.push(`${CONCEPT_BACKEND_URL}concepts?${countParams}`);
 
   const count = await helpers.countConceptsForConceptScheme(conceptSchemeUri);
 
@@ -216,7 +217,7 @@ async function getConceptsHasNoNarrowerBatchedRequestsUrls(conceptSchemeUri) {
       "page[size]": batchSize,
       sort: "position",
     });
-    urls.push(`${BACKEND_URL}concepts?${params}`);
+    urls.push(`${CONCEPT_BACKEND_URL}concepts?${params}`);
   }
 
   return urls;
@@ -231,7 +232,7 @@ async function getConceptsBatchedRequestsUrls(conceptSchemeUri) {
     "page[size]": 1,
     sort: "position",
   });
-  urls.push(`${BACKEND_URL}concepts?${countParams}`);
+  urls.push(`${CONCEPT_BACKEND_URL}concepts?${countParams}`);
 
   const count = await helpers.countConceptsForConceptScheme(conceptSchemeUri);
 
@@ -245,7 +246,7 @@ async function getConceptsBatchedRequestsUrls(conceptSchemeUri) {
       "page[size]": batchSize,
       sort: "position",
     });
-    urls.push(`${BACKEND_URL}concepts?${params}`);
+    urls.push(`${CONCEPT_BACKEND_URL}concepts?${params}`);
   }
 
   return urls;
@@ -262,7 +263,7 @@ async function getDateRangedConceptsBatchedRequestsUrls(conceptSchemeUri) {
     "page[size]": 1,
     sort: "start-date,label",
   });
-  urls.push(`${BACKEND_URL}concepts?${countParams}`);
+  urls.push(`${CONCEPT_BACKEND_URL}concepts?${countParams}`);
 
   const count = await helpers.countConceptsForConceptScheme(conceptSchemeUri);
 
@@ -276,7 +277,7 @@ async function getDateRangedConceptsBatchedRequestsUrls(conceptSchemeUri) {
       "page[size]": batchSize,
       sort: "start-date,label",
     });
-    urls.push(`${BACKEND_URL}concepts?${params}`);
+    urls.push(`${CONCEPT_BACKEND_URL}concepts?${params}`);
   }
 
   return urls;
@@ -287,7 +288,7 @@ function getStaticTypeUrl(typeName) {
     "page[size]": 100,
     sort: "position",
   });
-  return `${BACKEND_URL}${typeName}?${params}`;
+  return `${CONCEPT_BACKEND_URL}${typeName}?${params}`;
 }
 
 app.use(errorHandler);

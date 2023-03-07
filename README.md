@@ -19,11 +19,13 @@ services:
 ## Reference
 ### Configuration
 The following settings can be configured through environment variables:
-- **BACKEND_URL**: URL of the backend service to send requests to (default `http://cache/`). Must end with a trailing slash (`/`).
+- **BACKEND_URL**: URL of the backend service to send requests to (default `http://cache/`). Must end with a trailing slash (`/`)
+- **CONCEPT_BACKEND_URL**: URL of the backend service to send concept-related requests to (uses the value of **BACKEND_URL** if not set). Must end with a trailing slash (`/`)
 - **MASTER_GRAPH**: graph to fetch agenda's from using a sudo-query (default `http://mu.semte.ch/graphs/organizations/kanselarij`)
 - **AUTO_RUN**: runs the warmup process automatically on startup if set to `"true"` (default `"true"`)
 - **ENABLE_RECENT_AGENDAS_CACHE**: runs the warmup process for agendas modified during the last year if set to `"true"` (default `"true"`)
 - **ENABLE_LARGE_AGENDAS_CACHE**: runs the warmup process for large agendas if set to `"true"` (default `"true"`)
+- **ENABLE_CONCEPTS_CACHE**: runs the warmup process for concepts if set to `"true"` (default `"true"`)
 - **MIN_NB_OF_AGENDAITEMS**: minimum number of agendaitems for an agenda to be considered 'large' (default `"70"`)
 - **REQUEST_CHUNK_SIZE**: the max number of requests that will be made in parallel (default `10`)
 

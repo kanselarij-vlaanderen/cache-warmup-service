@@ -1,4 +1,5 @@
 const BACKEND_URL = process.env.BACKEND_URL || 'http://cache/';
+const CONCEPT_BACKEND_URL = process.env.CONCEPT_BACKEND_URL || BACKEND_URL;
 const MASTER_GRAPH = process.env.MASTER_GRAPH || 'http://mu.semte.ch/graphs/organizations/kanselarij';
 const PUBLIC_GRAPH = process.env.PUBLIC_GRAPH || 'http://mu.semte.ch/graphs/public';
 const AUTO_RUN = ["yes", "true", true, "1", 1, "on"].includes(process.env.AUTO_RUN);
@@ -77,6 +78,7 @@ const STATIC_TYPES = [
 
 export {
   BACKEND_URL,
+  CONCEPT_BACKEND_URL,
   MASTER_GRAPH,
   PUBLIC_GRAPH,
   AUTO_RUN,
