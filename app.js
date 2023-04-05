@@ -124,7 +124,7 @@ async function getAgendaitemsRequestUrls(agendaId) {
     "filter[agenda][:id:]": agendaId,
     include: "type",
     "page[size]": 300,
-    sort: "type,number",
+    sort: "type.position,number",
   });
   urls.push(`${BACKEND_URL}${path}?${params}`);
 
