@@ -1,6 +1,6 @@
 {
   "name": "cache-warmup-service",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Microservice to warmup mu-cache and mu-cl-resources cache",
   "repository": {
     "type": "git",
