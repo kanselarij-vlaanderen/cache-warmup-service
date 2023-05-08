@@ -16,12 +16,16 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "admin" },
     { "variables": [], "name": "secretarie" },
     { "variables": [], "name": "ovrb" },
+    { "variables": [], "name": "sign-flow-read" },
+    { "variables": [], "name": "sign-flow-write" },
     { "variables": [], "name": "clean" }
   ],
   [ // Secretarie / KB
     { "variables": [], "name": "public" },
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "secretarie" },
+    { "variables": [], "name": "sign-flow-read" },
+    { "variables": [], "name": "sign-flow-write" },
     { "variables": [], "name": "clean" }
   ],
   [ // OVRB
@@ -34,12 +38,15 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "public" },
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "o-minister-read" },
+    { "variables": [], "name": "sign-flow-read" },
+    { "variables": [], "name": "sign-flow-write" },
     { "variables": [], "name": "clean" }
   ],
   [ // Regering / kabinet
     { "variables": [], "name": "public" },
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "o-intern-regering-read" },
+    { "variables": [], "name": "sign-flow-read" },
     { "variables": [], "name": "clean" }
   ],
   [ // Overheid
