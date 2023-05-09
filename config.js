@@ -32,6 +32,7 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "public" },
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "ovrb" },
+    { "variables": [], "name": "sign-flow-read" },
     { "variables": [], "name": "clean" }
   ],
   [ // Minister
