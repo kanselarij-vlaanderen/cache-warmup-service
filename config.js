@@ -32,7 +32,6 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "sign-flow-read" },
     { "variables": [], "name": "sign-flow-write" },
     { "variables": [], "name": "parliament-flow-read" },
-    { "variables": [], "name": "parliament-flow-write" },
     { "variables": [], "name": "clean" }
   ],
   [ // OVRB
@@ -44,7 +43,7 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "parliament-flow-read" },
     { "variables": [], "name": "clean" }
   ],
-  [ // Minister
+  [ // Minister, kabinetchef & kabinetdossierbeheerder
     { "variables": [], "name": "public" },
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "minister-read" },
