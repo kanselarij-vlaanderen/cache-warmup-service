@@ -20,6 +20,8 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "ovrb-write" },
     { "variables": [], "name": "sign-flow-read" },
     { "variables": [], "name": "sign-flow-write" },
+    { "variables": [], "name": "parliament-flow-read" },
+    { "variables": [], "name": "parliament-flow-write" },
     { "variables": [], "name": "clean" }
   ],
   [ // Secretarie / KB
@@ -29,6 +31,7 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "kanselarij-write" },
     { "variables": [], "name": "sign-flow-read" },
     { "variables": [], "name": "sign-flow-write" },
+    { "variables": [], "name": "parliament-flow-read" },
     { "variables": [], "name": "clean" }
   ],
   [ // OVRB
@@ -37,15 +40,18 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "kanselarij-read" },
     { "variables": [], "name": "ovrb-write" },
     { "variables": [], "name": "sign-flow-read" },
+    { "variables": [], "name": "parliament-flow-read" },
     { "variables": [], "name": "clean" }
   ],
-  [ // Minister
+  [ // Minister, kabinetchef & kabinetdossierbeheerder
     { "variables": [], "name": "public" },
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "minister-read" },
     { "variables": [], "name": "minister-write" },
     { "variables": [], "name": "sign-flow-read" },
     { "variables": [], "name": "sign-flow-write" },
+    { "variables": [], "name": "parliament-flow-write" },
+    { "variables": [], "name": "parliament-flow-read" },
     { "variables": [], "name": "clean" }
   ],
   [ // Regering / kabinet
@@ -54,6 +60,7 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "regering-read" },
     { "variables": [], "name": "regering-write" },
     { "variables": [], "name": "sign-flow-read" },
+    { "variables": [], "name": "parliament-flow-read" },
     { "variables": [], "name": "clean" }
   ],
   [ // Overheid
@@ -61,6 +68,7 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "overheid-read" },
     { "variables": [], "name": "overheid-write" },
+    { "variables": [], "name": "parliament-flow-read" },
     { "variables": [], "name": "clean" }
   ]
 ];
