@@ -22,9 +22,23 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "sign-flow-write" },
     { "variables": [], "name": "parliament-flow-read" },
     { "variables": [], "name": "parliament-flow-write" },
+    { "variables": [], "name": "submissions-read" },
+    { "variables": [], "name": "submissions-write" },
     { "variables": [], "name": "clean" }
   ],
-  [ // Secretarie / KB
+  [ // Secretarie / Kanselarij
+    { "variables": [], "name": "public" },
+    { "variables": [], "name": "authenticated" },
+    { "variables": [], "name": "kanselarij-read" },
+    { "variables": [], "name": "kanselarij-write" },
+    { "variables": [], "name": "sign-flow-read" },
+    { "variables": [], "name": "sign-flow-write" },
+    { "variables": [], "name": "parliament-flow-read" },
+    { "variables": [], "name": "submissions-read" },
+    { "variables": [], "name": "submissions-write" },
+    { "variables": [], "name": "clean" }
+  ],
+  [ // KB
     { "variables": [], "name": "public" },
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "kanselarij-read" },
@@ -43,15 +57,29 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "parliament-flow-read" },
     { "variables": [], "name": "clean" }
   ],
-  [ // Minister, kabinetchef & kabinetdossierbeheerder
+  [ // Minister
     { "variables": [], "name": "public" },
     { "variables": [], "name": "authenticated" },
     { "variables": [], "name": "minister-read" },
     { "variables": [], "name": "minister-write" },
     { "variables": [], "name": "sign-flow-read" },
     { "variables": [], "name": "sign-flow-write" },
-    { "variables": [], "name": "parliament-flow-write" },
     { "variables": [], "name": "parliament-flow-read" },
+    { "variables": [], "name": "parliament-flow-write" },
+    { "variables": [], "name": "submissions-read" },
+    { "variables": [], "name": "clean" }
+  ],
+  [ // kabinetchef & kabinetdossierbeheerder
+    { "variables": [], "name": "public" },
+    { "variables": [], "name": "authenticated" },
+    { "variables": [], "name": "minister-read" },
+    { "variables": [], "name": "minister-write" },
+    { "variables": [], "name": "sign-flow-read" },
+    { "variables": [], "name": "sign-flow-write" },
+    { "variables": [], "name": "parliament-flow-read" },
+    { "variables": [], "name": "parliament-flow-write" },
+    { "variables": [], "name": "submissions-read" },
+    { "variables": [], "name": "submissions-write" },
     { "variables": [], "name": "clean" }
   ],
   [ // Regering / kabinet
@@ -90,6 +118,12 @@ const CONCEPT_SCHEMES = {
     "http://themis.vlaanderen.be/id/concept-scheme/b18acf1a-2a37-4b42-a549-b158d0065092",
   GOVERNMENT_FIELDS:
     "http://themis.vlaanderen.be/id/concept-scheme/0012aad8-d6e5-49e2-af94-b1bebd484d5b",
+  SIGNFLOW_STATUSES:
+    "http://themis.vlaanderen.be/id/concept-scheme/ebfe253c-0537-11ee-bb35-ee395168dcf7",
+  PARLIAMENT_FLOW_STATUSES:
+    "http://themis.vlaanderen.be/id/concept-scheme/bfa3671b-68c1-4371-aa00-63840b7c9901",
+  SUBMISSION_STATUSES:
+    "http://themis.vlaanderen.be/id/concept-scheme/9ee8c485-e750-4982-a2b7-3f17d390331d"
 };
 
 const STATIC_TYPES = [
