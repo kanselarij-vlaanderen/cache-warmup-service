@@ -89,6 +89,7 @@ const MU_AUTH_ALLOWED_GROUPS = [
     { "variables": [], "name": "regering-write" },
     { "variables": [], "name": "sign-flow-read" },
     { "variables": [], "name": "parliament-flow-read" },
+    { "variables": [], "name": "submissions-read" },
     { "variables": [], "name": "clean" }
   ],
   [ // Overheid
