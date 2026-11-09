@@ -1,4 +1,4 @@
-FROM semtech/mu-javascript-template:1.6.0
+FROM semtech/mu-javascript-template:feature-draft-1.10.0-clean-slim
 LABEL maintainer="redpencil.io <info@redpencil.io>"
 
 ENV AUTO_RUN="true"

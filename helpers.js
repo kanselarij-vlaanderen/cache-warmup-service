@@ -1,5 +1,4 @@
-import { sparqlEscapeDateTime, sparqlEscapeString, sparqlEscapeUri } from "mu";
-import { querySudo as query } from "@lblod/mu-auth-sudo";
+import { query, sparqlEscapeDateTime, sparqlEscapeString, sparqlEscapeUri } from "mu";
 import { MASTER_GRAPH, PUBLIC_GRAPH, MIN_NB_OF_AGENDAITEMS } from "./config";
 
 async function fetchMostRecentAgendas() {
@@ -17,7 +16,7 @@ async function fetchMostRecentAgendas() {
       }
       FILTER (?modified > ${sparqlEscapeDateTime(since)})
     } ORDER BY DESC(?modified)
-  `);
+  `, { sudo: true } );
 
   return queryResult.results.bindings.map((b) => b["agendaId"].value);
 }
@@ -40,7 +39,7 @@ async function fetchLargeAgendas() {
         GROUP BY ?agendaId
       }
       FILTER (?count > ${MIN_NB_OF_AGENDAITEMS})
-    } ORDER BY DESC(?count)`);
+    } ORDER BY DESC(?count)`, { sudo: true });
   return queryResult.results.bindings.map((b) => b["agendaId"].value);
 }
 
@@ -57,7 +56,7 @@ async function fetchAgendaitemsFromAgenda(agendaId) {
         ?agendaitem mu:uuid ?agendaitemId .
       }
     }
-    `);
+    `, { sudo: true });
   return queryResult.results.bindings.map((binding) => {
     return binding.agendaitemId.value;
   });
@@ -72,7 +71,7 @@ async function countConceptsForConceptScheme(conceptSchemeUri) {
     GRAPH <${PUBLIC_GRAPH}> {
       ?concept skos:inScheme ${sparqlEscapeUri(conceptSchemeUri)} .
     }
-  }`);
+  }`, { sudo: true });
   if (queryResult.results.bindings.length) {
     return queryResult.results.bindings[0].count.value;
   }

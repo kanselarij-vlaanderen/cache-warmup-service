@@ -1,5 +1,4 @@
 import { app, errorHandler } from "mu";
-import fetch from "node-fetch";
 import {
   AUTO_RUN,
   BACKEND_URL,

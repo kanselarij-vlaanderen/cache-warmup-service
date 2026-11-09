@@ -14,6 +14,8 @@ Add the following snippet to your `docker-compose.yml` file
 services:
   cache-warmup:
     image: kanselarij/cache-warmup-service:latest
+    environment:
+      ALLOW_MU_AUTH_SUDO: true
 ```
 
 ## Reference
